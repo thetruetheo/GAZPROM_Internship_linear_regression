@@ -5,34 +5,44 @@ from openpyxl import load_workbook
 source=load_workbook('example.xlsx')
 
 active_worksheet=source.active
-counter=2
+counter_x=2
+counter_y=2
 x_value=0
 y_value=0
-a_value=0
-b_value=0
-while(active_worksheet["A"+str(counter)].value!=None and active_worksheet["B"+str(counter)].value!=None):
-    x_value = active_worksheet["A" + str(counter)].value
-    y_value = active_worksheet["B" + str(counter)].value
-    a_value = active_worksheet["C" + str(counter)].value
-    if(x_value==0 and a_value!=None):
-        print("\nВходные данные: X = " + str(x_value) + " Y = " + str(y_value)+ " A = " + str(a_value))
-        print("Коэффициент X = 0, Коэффициент A = "+str(a_value))
-        counter+=1
-        continue
+x_avg=0
+x_summ=0
+y_avg=0
+y_summ=0
+numerator=0
+denominator=0
+result=0
 
-    if(x_value==0 and a_value==None):
-        print("\nНекорректный состав данных в документе, пожалуйста, проверьте содержимое файла на корректность.")
-        break
-    elif(x_value==None and a_value!=None):
-        print("\nНекорректный состав данных в документе, пожалуйста, проверьте содержимое файла на корректность.")
-        break
-    elif(x_value==None and y_value!=None):
-        print("\nНекорректный состав данных в документе, пожалуйста, проверьте содержимое файла на корректность.")
-        break
-    elif (x_value != None and y_value == None):
-        print("\nНекорректный состав данных в документе, пожалуйста, проверьте содержимое файла на корректность.")
-        break
-    b_value=y_value/x_value
-    print("\nВходные данные: X = "+str(x_value)+" Y = "+str(y_value))
-    print("Результаты вычислений: Коэффициент B = "+str(b_value))
-    counter+=1
+while(active_worksheet["A"+str(counter_x)].value!=None):
+    x_avg+=active_worksheet["A" + str(counter_x)].value
+    counter_x+=1
+x_avg=(x_avg/(counter_x-2))
+
+counter_x=2
+
+while(active_worksheet["B"+str(counter_y)].value!=None):
+    y_avg+=active_worksheet["B" + str(counter_y)].value
+    counter_y+=1
+y_avg=(y_avg/(counter_y-2))
+
+counter_y=2
+
+
+while(active_worksheet["A"+str(counter_x)].value!=None and active_worksheet["B"+str(counter_y)].value!=None):
+    numerator+=((active_worksheet["A"+str(counter_x)].value-x_avg)*(active_worksheet["B"+str(counter_y)].value-y_avg))
+    counter_x+=1
+    counter_y+=1
+
+counter_x=2
+counter_y=2
+while(active_worksheet["A"+str(counter_x)].value!=None):
+    denominator+=((active_worksheet["A"+str(counter_x)].value-x_avg)**2)
+    counter_x+=1
+counter_x=2
+
+result=numerator/denominator
+print("Результат вычислений: "+str(result))
